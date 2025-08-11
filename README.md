@@ -30,12 +30,12 @@ The blockchain record and user dashboard are also part of this flow.
 
 Tech Stack
 ------------------------------
-1. Frontend: React .
-2. Backend: Node.js
+1. Frontend: ReactJs .
+2. Backend: NodeJs and ExpressJs
 3. AI/NLP: Gemini API .
-4. Blockchain: Base .
+4. Blockchain: Base.
 5. Hashing: SHA256.
-6. Database (optional): MongoDB.
+6. Database: MongoDB.
 
 Future Add-ons
 ------------------------------
@@ -47,3 +47,16 @@ Branding & Positioning
 ------------------------------
 ChainInsight gives contributors "digital armor for their ideas: Original, immutable, and ready to be shared confidently". 
 It's positioned as a "GitHub for thought leadership—where insight meets integrity".
+
+How To run
+1. run git clone `https:/`
+2. cd frontend
+3. npm install
+4. cd backend
+5. npm install
+6. cd smartcontract
+7. npm install
+To run frontend: run `npm run dev`; it is will displayed at port 5173 on localhost
+To run backend: run nodemon; it will be listening at port 8000 in localhost
+
+Live url: 
