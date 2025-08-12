@@ -2,6 +2,7 @@ const { ethers } = require('ethers');
 const Insight = require('../models/insightModel');
 const AppError = require('../utils/appError');
 const logger = require('../utils/logger');
+const contractABI = require('../abi/insightContractABI.json'); 
 
 let provider;
 let wallet;
@@ -13,12 +14,9 @@ const initialize = () => {
         wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
         
         contract = new ethers.Contract(
-        process.env.CONTRACT_ADDRESS,
-        [
-            'function storeHash(bytes32)',
-            'function verifyHash(bytes32) view returns (uint256, address)',
-        ],
-        wallet
+            process.env.CONTRACT_ADDRESS,
+            contractABI.abi,
+            wallet
         );
         
         logger.info('Blockchain service initialized');
@@ -66,7 +64,7 @@ const verifyHashOnChain = async (contentHash) => {
 };
 
 module.exports = {
-  initialize,
-  storeHashOnChain,
-  verifyHashOnChain,
+    initialize,
+    storeHashOnChain,
+    verifyHashOnChain,
 };

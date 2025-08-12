@@ -2,18 +2,16 @@ Proof of Insight (PoI) Verifier
 -------------------------------
 Name: ChainInsight
 -------------------------------
-A lot of information we find of the internet are mislaeding not that they are wrong but the mislead people because they are  below the standard. POI meaning of Proof Of Insight is A concensus mechanism in which infomation is verified before they are put online using AI and the blockchain technolgy.
--------------------------------
 Overview
 -------------------------------
 ChainInsight is a lightweight, AI-powered platform that lets financial analysts, researchers, and thought leaders submit original insights. The AI evaluates these insights for quality and originality, then records them permanently on a blockchain. This offers immutable proof of authorship and intellectual contribution.
 
 Use Case
 -------------------------------
- Financial analysts seeking recognition for original market insights.
- Research writers wanting timestamped verification of first publication.
- Communities tracking intellectual contributions in decentralized forums.
- Institutions verifying originality before promoting or endorsing content.
+1. Financial analysts seeking recognition for original market insights.
+2. Research writers wanting timestamped verification of first publication.
+3. Communities tracking intellectual contributions in decentralized forums.
+4. Institutions verifying originality before promoting or endorsing content.
 
 Core Features
 ------------------------------
@@ -60,3 +58,5 @@ To run frontend: run `npm run dev`; it is will displayed at port 5173 on localho
 To run backend: run nodemon; it will be listening at port 8000 in localhost
 
 Live url: 
+
+Articles: https://www.scoredetect.com/blog/posts/blockchain-based-authorship-verification-explained
