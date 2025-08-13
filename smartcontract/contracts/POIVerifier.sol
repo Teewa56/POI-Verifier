@@ -2,15 +2,13 @@
 pragma solidity ^0.8.28;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
-
 /**
  * @title Proof of Insight Verifier
  * @dev Stores content hashes with metadata on-chain
  */
+
 contract PoIVerifier is Ownable {
-    using Counters for Counters.Counter;
-    
+    constructor() Ownable(msg.sender) {}
     // Struct to store insight data
     struct Insight {
         bytes32 contentHash;
@@ -40,8 +38,8 @@ contract PoIVerifier is Ownable {
         int256 sentimentScore
     );
 
-    // Counter for total insights
-    Counters.Counter private _totalInsights;
+    // Variable for total insights (replacing Counters.Counter)
+    uint256 private _totalInsights;
 
     /**
      * @dev Store a new insight
@@ -68,7 +66,7 @@ contract PoIVerifier is Ownable {
             tagInsights[tags[i]].push(contentHash);
         }
 
-        _totalInsights.increment();
+        _totalInsights += 1; // Increment manually
         emit InsightStored(contentHash, msg.sender, block.timestamp, tags);
     }
 
@@ -142,6 +140,6 @@ contract PoIVerifier is Ownable {
      * @dev Get total insight count
      */
     function totalInsights() external view returns (uint256) {
-        return _totalInsights.current();
+        return _totalInsights;
     }
 }

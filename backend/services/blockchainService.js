@@ -10,7 +10,7 @@ let contract;
 
 const initialize = () => {
     try {
-        provider = new ethers.providers.JsonRpcProvider(process.env.BASE_RPC_URL);
+        provider = new ethers.providers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC_URL);
         wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
         
         contract = new ethers.Contract(

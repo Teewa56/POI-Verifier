@@ -6,7 +6,7 @@ exports.generateHash = (content) => {
 };
 
 exports.storeOnBlockchain = async (hash) => {
-    const provider = new ethers.providers.JsonRpcProvider(process.env.BASE_RPC_URL);
+    const provider = new ethers.providers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC_URL);
     const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
     
     const contract = new ethers.Contract(

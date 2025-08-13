@@ -1,19 +1,20 @@
 const nodemailer = require('nodemailer');
-const AppError = require('./appError');
+const AppError = require('../utils/appError');
 
 const sendEmail = async (options) => {
     try {
         const transporter = nodemailer.createTransport({
-        host: process.env.EMAIL_HOST,
-        port: process.env.EMAIL_PORT,
-        auth: {
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASSWORD,
-        },
+            host: process.env.EMAIL_HOST,
+            port: process.env.EMAIL_PORT,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USERNAME,
+                pass: process.env.EMAIL_PASSWORD,
+            },
         });
 
         const mailOptions = {
-            from: 'Proof of Insight <no-reply@proofofinsight.com>',
+            from: 'Marvellous Ogunode from ChainInsight',
             to: options.email,
             subject: options.subject,
             text: options.message,

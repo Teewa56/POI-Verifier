@@ -2,6 +2,7 @@ const Insight = require('../models/insightModel');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const blockchainService = require('../services/blockchainService');
+const {getInsightSummary, scoreInsight} = require('../services/nlpService');
 
 exports.getAllInsights = async (req, res, next) => {
     try {
@@ -124,3 +125,29 @@ exports.deleteInsight = async (req, res, next) => {
         next(err);
     }
 };
+
+exports.getSummary = async (req, res, next) => {
+    const {title, content} = req.data;
+    try {
+        const summary = await getInsightSummary(title, content);
+        res.status(200).json({
+            status: 'success', 
+            data: summary
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+exports.scoreInsight = async (req, res, next) => {
+    const {title, content} = req.data;
+    try {
+        const scores = await getInsightSummary(title, content);
+        res.status(200).json({
+            status: 'success', 
+            data: scores
+        })
+    } catch (error) {
+        next(error);
+    }
+}
