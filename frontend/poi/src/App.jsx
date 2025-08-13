@@ -1,7 +1,42 @@
-export default function App(){
-  return(
-    <div>
-      <p>Hello</p>
-    </div>
-  )
+import { Routes, Route } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from './context/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
+import ErrorBoundary from './components/ErrorBoundary';
+import SideNav from './components/SideNav';
+import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
+import SubmitPage from './pages/SubmitPage';
+import ProfilePage from './pages/ProfilePage';
+import SignInPage from './pages/SignInPage';
+import SignUpPage from './pages/SignUpPage';
+import NotFoundPage from './pages/NotFoundPage';
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <ThemeProvider>
+          <div className="flex min-h-screen bg-gray-100 dark:bg-gray-900">
+            <SideNav />
+            <div className="flex-1 ml-64 p-4">
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/submit" element={<SubmitPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/signin" element={<SignInPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route path="*" element={<NotFoundPage />} />
+              </Routes>
+            </div>
+            <ToastContainer position="bottom-right" />
+          </div>
+        </ThemeProvider>
+      </AuthProvider>
+    </ErrorBoundary>
+  );
 }
+
+export default App;

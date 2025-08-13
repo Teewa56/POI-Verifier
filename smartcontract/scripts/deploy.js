@@ -5,7 +5,7 @@ async function main() {
     const PoIVerifier = await ethers.getContractFactory("PoIVerifier");
     const contract = await PoIVerifier.deploy();
     await contract.deployed();
-    const details = `VerifierContract: ${contract.address}`
+    const details = `VerifierContractAddress: ${contract.address}`
     fs.writeFileSync('contractAddress.json', details, null, 2);
     if (process.env.NETWORK !== "hardhat") {
         console.log("Waiting for 5 block confirmations...");
