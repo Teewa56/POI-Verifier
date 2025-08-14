@@ -11,8 +11,9 @@ const insightSchema = new mongoose.Schema({
         type: String,
         required: [true, 'An insight must have a content hash'],
         unique: true,
+        index: true,
     },
-    blockchainTxHash: String,
+    blockchainTxHash: [String],
     blockchainTimestamp: Date,
     originalityScore: {
         type: Number,
@@ -41,7 +42,6 @@ const insightSchema = new mongoose.Schema({
     },
 });
 
-insightSchema.index({ contentHash: 1 });
 insightSchema.index({ user: 1 });
 insightSchema.index({ tags: 1 });
 

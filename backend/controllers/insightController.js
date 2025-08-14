@@ -31,7 +31,7 @@ exports.getAllInsights = async (req, res, next) => {
 
 exports.createInsight = async (req, res, next) => {
     try {
-        const { content, tags } = req.body;
+        const { content, originalityScore, sentimentScore, tags } = req.body;
         
         const contentHash = crypto.createHash('sha256').update(content).digest('hex');
         
@@ -42,7 +42,7 @@ exports.createInsight = async (req, res, next) => {
             contentHash,
         });
 
-        blockchainService.storeHashOnChain(contentHash, req.user.id, newInsight._id)
+        blockchainService.storeHashOnChain(contentHash, originalityScore, sentimentScore, newInsight._id)
         .catch(err => console.error('Blockchain storage failed:', err));
 
         res.status(201).json({
@@ -80,54 +80,8 @@ exports.getInsight = async (req, res, next) => {
     }
 };
 
-exports.updateInsight = async (req, res, next) => {
-    try {
-        const insight = await Insight.findOneAndUpdate(
-        { _id: req.params.id, user: req.user.id },
-        req.body,
-        {
-            new: true,
-            runValidators: true,
-        }
-        );
-
-        if (!insight) {
-            throw new AppError('No insight found with that ID', 404);
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                insight,
-            },
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
-exports.deleteInsight = async (req, res, next) => {
-    try {
-        const insight = await Insight.findOneAndDelete({
-            _id: req.params.id,
-            user: req.user.id,
-        });
-
-        if (!insight) {
-            throw new AppError('No insight found with that ID', 404);
-        }
-
-        res.status(204).json({
-            status: 'success',
-            data: null,
-        });
-    } catch (err) {
-        next(err);
-    }
-};
-
 exports.getSummary = async (req, res, next) => {
-    const {title, content} = req.data;
+    const {title, content} = req.body;
     try {
         const summary = await getInsightSummary(title, content);
         res.status(200).json({
@@ -139,10 +93,10 @@ exports.getSummary = async (req, res, next) => {
     }
 }
 
-exports.scoreInsight = async (req, res, next) => {
-    const {title, content} = req.data;
+exports.generateInsightScores = async (req, res, next) => {
+    const {title, content} = req.body;
     try {
-        const scores = await getInsightSummary(title, content);
+        const scores = await scoreInsight(title, content);
         res.status(200).json({
             status: 'success', 
             data: scores

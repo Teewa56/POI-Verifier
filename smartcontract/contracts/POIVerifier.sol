@@ -91,6 +91,16 @@ contract PoIVerifier is Ownable {
         emit InsightUpdated(contentHash, originalityScore, sentimentScore);
     }
 
+    function verifyInsight(bytes32 _contentHash) external view returns (Insight memory) {
+        require(_contentHash != bytes32(0), "Please provide an insight hash");
+
+        Insight storage insight = insights[_contentHash];
+        require(insight.author != address(0), "Content hash is not available");
+
+        return insight;
+    }
+
+
     /**
      * @dev Get insight data by hash
      * @param contentHash Hash of the content

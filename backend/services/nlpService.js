@@ -1,9 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
+const { GoogleGenAI } = require("@google/genai");
 require('dotenv').config();
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-const ai = new GoogleGenAI({apiKey: GEMINI_API_KEY});
+const genAI = new GoogleGenAI({apiKey: GEMINI_API_KEY});
 
 async function analyzeWithGemini(prompt, modelName = "gemini-1.5-flash") {
     try {

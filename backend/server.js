@@ -5,7 +5,7 @@ const http = require('http');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
-const {csrfMiddleware} = require('./middleware/csrfMiddleware;')
+const {csrfMiddleware} = require('./middleware/csrfMiddleware')
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
@@ -24,9 +24,9 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 app.use('/api', apiLimiter);
-
+const liveUrl = process.env.CLIENT_LIVE_URL;
 app.use(cors({
-    origin: ['http://localhost:5173'], 
+    origin: ['http://localhost:5173', liveUrl], 
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     credentials: true,
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -35,7 +35,7 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
-app.use(csrfMiddleware());
+app.use(csrfMiddleware);
 app.use(mongoSanitize());
 app.use(xss());
 app.use(hpp({
@@ -52,12 +52,11 @@ app.use('/api', apiRouter);
 app.get('/', (req, res) => {
     res.status(200).json({ 
         status: 'success',
-        message: 'Happy Hacking! 🚀',
-        documentation: '/api-docs' 
+        message: 'Happy Hacking! 🚀'
     });
 });
 
-app.all('*', (req, res, next) => {
+app.all('/*splat', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
@@ -71,10 +70,10 @@ connectDB()
         server.listen(PORT, () => {
             console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
             
-            if (process.env.BLOCKCHAIN_ENABLED === 'true') {
-                const blockchainService = require('./services/blockchainService');
-                blockchainService.initialize();
-            }
+                if (process.env.BLOCKCHAIN_ENABLED === 'true') {
+                    const blockchainService = require('./services/blockchainService');
+                    blockchainService.initialize();
+                }
         });
     })
     .catch((error) => {

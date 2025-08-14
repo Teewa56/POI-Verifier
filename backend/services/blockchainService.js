@@ -10,7 +10,7 @@ let contract;
 
 const initialize = () => {
     try {
-        provider = new ethers.providers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC_URL);
+        provider = new ethers.JsonRpcProvider(process.env.BASE_SEPOLIA_RPC_URL);
         wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
         
         contract = new ethers.Contract(
@@ -26,15 +26,16 @@ const initialize = () => {
     }
 };
 
-const storeHashOnChain = async (contentHash, userId, insightId) => {
+const storeHashOnChain = async (contentHash, originalityScore, sentimentScore, insightId) => {
     try {
         if (!contract) initialize();
         
-        const tx = await contract.storeHash(contentHash);
+        const tx = await contract.storeInsight(contentHash);
         const receipt = await tx.wait();
-        
+        const updatedTx = await contract.updateInsightScores(contentHash, originalityScore, sentimentScore);
+        const newReciept = await updatedTx.wait();
         await Insight.findByIdAndUpdate(insightId, {
-            blockchainTxHash: receipt.transactionHash,
+            blockchainTxHash: [receipt.transactionHash, newReciept.transactionHash],
             blockchainTimestamp: new Date(),
         });
         
@@ -52,10 +53,10 @@ const verifyHashOnChain = async (contentHash) => {
     try {
         if (!contract) initialize();
         
-        const [timestamp, owner] = await contract.verifyHash(contentHash);
+        const [timestamp, author] = await contract.verifyInsight(contentHash);
         return {
             timestamp: new Date(timestamp * 1000), // Convert to JS timestamp
-            owner,
+            author,
         };
     } catch (err) {
         logger.error('Failed to verify hash on blockchain:', err);

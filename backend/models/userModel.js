@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
         enum: ['user', 'analyst', 'admin'],
         default: 'user',
     },
-ALCHEMY    password: {
+    password: {
         type: String,
         required: [true, 'Please provide a password'],
         minlength: 8,

@@ -53,28 +53,6 @@ exports.refreshToken = async (req, res, next) => {
     }
 };
 
-exports.protect = async (req, res, next) => {
-    try {
-        let token;
-        if (
-            req.headers.authorization &&
-            req.headers.authorization.startsWith('Bearer')
-        ) {
-            token = req.headers.authorization.split(' ')[1];
-        }
-
-        if (!token) {
-            throw new AppError('You are not logged in! Please log in to get access.', 401);
-        }
-
-        const currentUser = await authService.verifyToken(token);
-        req.user = currentUser;
-        next();
-    } catch (err) {
-        next(err);
-    }
-};
-
 exports.logout = async (req, res, next) => {
     try {
         if (req.body.refreshToken) {
