@@ -13,7 +13,7 @@ export function NotificationProvider({ children }) {
         if (!user) return;
 
         const socket = io(import.meta.env.REACT_APP_SOCKET_URL, {
-        auth: { token: localStorage.getItem('token') }
+        auth: { token: sessionStorage.getItem('token') }
         });
 
         socket.on('new_notification', (notification) => {

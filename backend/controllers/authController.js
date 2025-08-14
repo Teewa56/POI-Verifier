@@ -2,19 +2,42 @@ const authService = require('../services/authService');
 const User = require('../models/userModel');
 const Token = require('../models/tokenModel');
 const AppError = require('../utils/appError');
+const { OAuth2Client } = require('google-auth-library');
+const bcrypt = require('bcrypt');
+
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+exports.getProfile = async(req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if(!user) throw new AppError('User not found', 404);
+        res.status(200).json({
+            status: 'success',
+            user
+        });
+    } catch (error) {
+        next(new AppError(err.message, 500));
+    }
+}
 
 exports.signup = async (req, res, next) => {
+    console.log(req.body.userData);
     try {
+        const existingUser = await User.findOne({email: req.body.userData.email});
+        if(existingUser){
+            throw new AppError('User Already Exists', 400);
+        }
+        const hashedPassword = await bcrypt.hash(req.body.userData.password, 13);
         const newUser = await User.create({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            passwordConfirm: req.body.passwordConfirm,
+            name: req.body.userData.name,
+            email: req.body.userData.email,
+            password: hashedPassword,
         });
 
         await authService.createSendToken(newUser, 201, res);
     } catch (err) {
-        next(new AppError(err.message, 400));
+        console.log(err);
+        next(new AppError(err.message, 500));
     }
 };
 
@@ -28,15 +51,44 @@ exports.login = async (req, res, next) => {
 
         const user = await User.findOne({ email }).select('+password');
 
-        if (!user || !(await user.correctPassword(password, user.password))) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new AppError('Incorrect email or password', 401);
         }
 
         await authService.createSendToken(user, 200, res);
     } catch (err) {
-        next(err);
+        next(new AppError(err.message, 500));
     }
 };
+
+exports.loginWithGooogle = async (req, res, next) => {
+    try {
+        const { token } = req.body;
+        const ticket = await client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CLIENT_ID
+        });
+        const payload = ticket.getPayload();
+
+        const email = payload.email;
+        const user = await User.findOne({ email });
+
+        if (!user) {
+            const newUser = await User.create({
+                name: payload.name,
+                email: payload.email,
+                picture: payload.picture,
+                provider: 'google'
+            });
+            await authService.createSendToken(newUser, 201, res);
+        }else{
+            await authService.createSendToken(user, 200, res);
+        }
+    } catch (error) {
+        next(new AppError(err.message, 500));
+    }
+};
+
 
 exports.refreshToken = async (req, res, next) => {
     try {
@@ -49,7 +101,7 @@ exports.refreshToken = async (req, res, next) => {
         const user = await authService.refreshToken(refreshToken);
         await authService.createSendToken(user, 200, res);
     } catch (err) {
-        next(err);
+        next(new AppError(err.message, 500));
     }
 };
 
@@ -101,7 +153,7 @@ exports.forgotPassword = async (req, res, next) => {
             throw new AppError('There was an error sending the email. Try again later!', 500);
         }
     } catch (err) {
-        next(err);
+        next(new AppError(err.message, 500));
     }
 };
 
@@ -129,6 +181,6 @@ exports.resetPassword = async (req, res, next) => {
 
         await authService.createSendToken(user, 200, res);
     } catch (err) {
-        next(err);
+        next(new AppError(err.message, 500));
     }
 };

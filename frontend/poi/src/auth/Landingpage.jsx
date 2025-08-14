@@ -53,22 +53,10 @@ export default function LandingPage() {
         <nav className="container mx-auto px-6 py-4 flex justify-between items-center">
             <div className="flex items-center">
             <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Proof of Insight
+                ChainInsight
             </span>
             </div>
             <div className="flex items-center space-x-6">
-            <Link 
-                to="/about" 
-                className={`font-medium ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
-            >
-                About
-            </Link>
-            <Link 
-                to="/features" 
-                className={`font-medium ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-900'}`}
-            >
-                Features
-            </Link>
             {user ? (
                 <Link
                 to="/dashboard"
@@ -92,7 +80,7 @@ export default function LandingPage() {
             initial="hidden"
             animate="visible"
             variants={containerVariants}
-            className="container mx-auto px-6 py-20 text-center"
+            className="container mx-auto px-6 py-20 text-center rounded-2xl"
         >
             <motion.h1 
             variants={itemVariants}
@@ -129,37 +117,15 @@ export default function LandingPage() {
                     to="/signup"
                     className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-3 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity"
                 >
-                    Start for Free
-                </Link>
-                <Link
-                    to="/demo"
-                    className="border border-gray-300 dark:border-gray-600 px-8 py-3 rounded-lg text-lg font-medium hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-                >
-                    See Demo
+                    Get Started
                 </Link>
                 </>
             )}
             </motion.div>
-            
-            <motion.div variants={itemVariants} className="mt-16">
-            <div className={`inline-block px-3 py-1 rounded-full ${darkMode ? 'bg-gray-800 text-gray-300' : 'bg-gray-100 text-gray-600'}`}>
-                Trusted by researchers at
-            </div>
-            <div className="flex justify-center items-center mt-6 space-x-8 md:space-x-16">
-                {['Stanford', 'MIT', 'Harvard', 'Oxford', 'ETH Zurich'].map((uni) => (
-                <div 
-                    key={uni} 
-                    className={`text-xl font-medium ${darkMode ? 'text-gray-400' : 'text-gray-500'} opacity-80 hover:opacity-100 transition-opacity`}
-                >
-                    {uni}
-                </div>
-                ))}
-            </div>
-            </motion.div>
         </motion.section>
 
         {/* Features Section */}
-        <section className={`py-20 ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
+        <section className={`py-20 rounded-3xl ${darkMode ? 'bg-gray-800' : 'bg-white'}`}>
             <div className="container mx-auto px-6">
             <h2 className={`text-3xl font-bold text-center mb-16 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 Why Choose Proof of Insight?
@@ -239,7 +205,7 @@ export default function LandingPage() {
         </section>
 
         {/* CTA Section */}
-        <section className={`py-20 ${darkMode ? 'bg-gradient-to-b from-gray-800 to-gray-900' : 'bg-gradient-to-b from-blue-50 to-white'}`}>
+        <section className={`py-20 rounded-2xl ${darkMode ? 'bg-gradient-to-b from-gray-800 to-gray-900' : 'bg-gradient-to-b from-blue-50 to-white'}`}>
             <div className="container mx-auto px-6 text-center">
             <h2 className={`text-3xl font-bold mb-6 ${darkMode ? 'text-white' : 'text-gray-900'}`}>
                 Ready to Protect Your Insights?
@@ -252,7 +218,7 @@ export default function LandingPage() {
                 to={user ? "/submit" : "/signup"}
                 className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:opacity-90 transition-opacity shadow-lg"
                 >
-                {user ? 'Submit New Insight' : 'Get Started for Free'}
+                {user ? 'Submit New Insight' : 'Get Started'}
                 </Link>
             </div>
             </div>
@@ -264,11 +230,11 @@ export default function LandingPage() {
             <div className="flex flex-col md:flex-row justify-between items-center">
                 <div className="mb-4 md:mb-0">
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    Proof of Insight
+                    ChainInsight
                 </span>
                 </div>
                 <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                © {new Date().getFullYear()} Proof of Insight Verifier. All rights reserved.
+                © {new Date().getFullYear()} ChainInsight. All rights reserved.
                 </div>
             </div>
             </div>

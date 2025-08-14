@@ -4,12 +4,12 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
     const [darkMode, setDarkMode] = useState(() => {
-        const savedMode = localStorage.getItem('theme');
+        const savedMode = sessionStorage.getItem('theme');
         return savedMode ? JSON.parse(savedMode) : 'light';
     });
 
     useEffect(() => {
-        localStorage.setItem('darkMode', JSON.stringify(darkMode));
+        sessionStorage.setItem('darkMode', JSON.stringify(darkMode));
         if (darkMode) {
             document.documentElement.classList.add('dark');
         } else {

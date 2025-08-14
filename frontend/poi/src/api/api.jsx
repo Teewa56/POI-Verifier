@@ -11,7 +11,7 @@ const API = axios.create({
 });
 
 API.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
@@ -27,17 +27,17 @@ API.interceptors.response.use(
             originalRequest._retry = true;
 
             try {
-                const refreshToken = localStorage.getItem('refreshToken');
+                const refreshToken = sessionStorage.getItem('refreshToken');
                 if (!refreshToken) throw new Error('No refresh token');
 
                 const res = await API.post('/refresh-token', { refreshToken });
                 const { token: newToken } = res.data;
 
-                localStorage.setItem('token', newToken);
+                sessionStorage.setItem('token', newToken);
                 originalRequest.headers.Authorization = `Bearer ${newToken}`;
                 return API(originalRequest);
             } catch (err) {
-                localStorage.clear();
+                sessionStorage.clear();
                 window.location.href = '/login';
                 return Promise.reject(err);
             }
@@ -51,13 +51,14 @@ API.interceptors.response.use(
 
 // --- Auth APIs ---
 export const Login = (email, password) => API.post('/login', { email, password });
-export const Register = (name, email, password, passwordConfirm) => 
-    API.post('/register', { name, email, password, passwordConfirm });
+export const LoginWithGoogle = (token) => API.post('/auth/google', {token})
+export const Register = (userData) => 
+    API.post('/register', userData);
 export const Logout = (refreshToken) => API.post('/logout', { refreshToken });
 export const ForgotPassword = (email) => API.post('/forgot-password', { email });
 export const ResetPassword = (token, password, passwordConfirm) =>
     API.post(`/reset-password/${token}`, { password, passwordConfirm });
-
+export const GetProfile = () => API.get('/user-profile');
 // --- Insight APIs ---
 export const GetAllInsights = () => API.get('/insights');
 export const CreateInsight = (data) => API.post('/insights/new', data);

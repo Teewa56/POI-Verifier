@@ -11,12 +11,12 @@ jest.mock('react-toastify', () => ({
 
 describe('API Service', () => {
     beforeEach(() => {
-        localStorage.clear();
+        sessionStorage.clear();
         jest.clearAllMocks();
     });
 
     it('should add authorization header when token exists', () => {
-        localStorage.setItem('token', 'test-token');
+        sessionStorage.setItem('token', 'test-token');
         const mockRequest = { headers: {} };
         
         API.interceptors.request.handlers[0].fulfilled(mockRequest);
@@ -42,11 +42,11 @@ describe('API Service', () => {
         delete window.location;
         window.location = { href: '' };
         
-        localStorage.setItem('token', 'test-token');
+        sessionStorage.setItem('token', 'test-token');
         
         return API.interceptors.response.handlers[0].rejected(mockError)
         .catch(() => {
-            expect(localStorage.getItem('token')).toBeNull();
+            expect(sessionStorage.getItem('token')).toBeNull();
             expect(window.location.href).toBe('/login');
             expect(toast.error).toHaveBeenCalledWith('An error occurred');
             

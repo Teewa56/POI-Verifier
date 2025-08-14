@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import apiErrorHandler from '../utils/apiErrorHandler';
+import Loading from '../components/Loading';
 
 export default function SignUpPage() {
     const [formData, setFormData] = useState({
@@ -16,8 +18,8 @@ export default function SignUpPage() {
 
     const handleChange = (e) => {
         setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
+            ...formData,
+            [e.target.name]: e.target.value,
         });
     };
 
@@ -25,26 +27,27 @@ export default function SignUpPage() {
         e.preventDefault();
         
         if (formData.password !== formData.confirmPassword) {
-        toast.error('Passwords do not match');
-        return;
+            toast.error('Passwords do not match');
+            return;
         }
-
-        setLoading(true);
-        const result = await signUp({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        });
-        setLoading(false);
-        
-        if (!result.success) {
-        toast.error(result.error || 'Sign up failed');
+        try {
+            setLoading(true);
+            const payload = {
+                name: formData.name,
+                email: formData.email,
+                password: formData.password,
+            }
+            await signUp(payload);
+            setLoading(false);
+            navigate('/')
+        } catch (error) {
+            apiErrorHandler(error);
         }
-        navigate('/')
     };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        {loading && <Loading />}
         <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <h2 className="text-2xl font-bold text-center dark:text-white">
             Create a new account
@@ -61,6 +64,7 @@ export default function SignUpPage() {
                     name="name"
                     type="text"
                     required
+                    placeholder='Enter Your full name'
                     value={formData.name}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -76,6 +80,7 @@ export default function SignUpPage() {
                     name="email"
                     type="email"
                     required
+                    placeholder='Enter your email address'
                     value={formData.email}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -90,8 +95,9 @@ export default function SignUpPage() {
                     id="password"
                     name="password"
                     type="password"
+                    placeholder='Enter Your Password'
                     required
-                    minLength="6"
+                    minLength="8"
                     value={formData.password}
                     onChange={handleChange}
                     className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
@@ -106,6 +112,7 @@ export default function SignUpPage() {
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
+                    placeholder='Re-Enter Your Password'
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}

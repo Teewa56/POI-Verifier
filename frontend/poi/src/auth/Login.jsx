@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
 import { toast } from 'react-toastify';
+import { GoogleLogin } from '@react-oauth/google';
+import apiErrorHandler from '../utils/apiErrorHandler';
+import Loading from '../components/Loading';
 
 export default function SignInPage() {
     const [email, setEmail] = useState('');
@@ -12,12 +14,13 @@ export default function SignInPage() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        const result = await signIn(email, password);
-        setLoading(false);
-        if (!result.success) {
-            toast.error(result.error || 'Sign in failed');
+        try {
+            e.preventDefault();
+            setLoading(true);
+            await signIn(email, password);
+            setLoading(false);
+        } catch (error) {
+            apiErrorHandler(error);
         }
     };
 
@@ -34,6 +37,7 @@ export default function SignInPage() {
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+            {loading && <Loading />}
             <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold text-center dark:text-white">
                 Sign in to your account
@@ -107,6 +111,7 @@ export default function SignInPage() {
                     Don't have an account?{' '}
                 </span>
                 <button
+                    disabled={loading}
                     onClick={() => navigate('/signup')}
                     className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
                 >

@@ -7,7 +7,7 @@ jest.mock('../api/api');
 
 describe('AuthContext', () => {
   beforeEach(() => {
-    localStorage.clear();
+    sessionStorage.clear();
     jest.clearAllMocks();
   });
 
@@ -39,7 +39,7 @@ describe('AuthContext', () => {
       name: 'Test User',
       email: 'test@example.com',
     });
-    expect(localStorage.getItem('token')).toBe('test-token');
+    expect(sessionStorage.getItem('token')).toBe('test-token');
   });
 
   it('should handle sign in failure', async () => {
@@ -56,11 +56,11 @@ describe('AuthContext', () => {
     });
 
     expect(result.current.user).toBeNull();
-    expect(localStorage.getItem('token')).toBeNull();
+    expect(sessionStorage.getItem('token')).toBeNull();
   });
 
   it('should sign out', async () => {
-    localStorage.setItem('token', 'test-token');
+    sessionStorage.setItem('token', 'test-token');
     API.get.mockResolvedValueOnce({
       data: { user: { id: '1', name: 'Test User', email: 'test@example.com' } },
     });
@@ -76,6 +76,6 @@ describe('AuthContext', () => {
     });
 
     expect(result.current.user).toBeNull();
-    expect(localStorage.getItem('token')).toBeNull();
+    expect(sessionStorage.getItem('token')).toBeNull();
   });
 });
