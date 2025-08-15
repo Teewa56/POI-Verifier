@@ -1,63 +1,42 @@
+require('dotenv').config();
 const express = require('express');
-const connectDB = require('./config/db');
 const cors = require('cors');
-const http = require('http');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const {apiLimiter} = require('./middleware/rateLimiter');
+const connectDB = require('./config/db');
 const apiRouter = require('./routes/api');
-
-const errorController = require('./controllers/errorController');
+const { globalErrorHandler } = require('./controllers/errorController');
+const { apiLimiter } = require('./middleware/rateLimiter');
+const http = require('http');
 
 const app = express();
 
+// Security & utils
 app.use(helmet());
-
-if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('dev'));
-}
-
-app.use('/api', apiLimiter);
-const liveUrl = process.env.CLIENT_LIVE_URL;
-app.use(cors({
-    origin: ['http://localhost:5173', liveUrl], 
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
-
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(morgan('dev'));
+app.use(cors({ origin: true, credentials: true }));
+app.use(express.json());
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(xss());
-app.use(hpp({
-    whitelist: [ 
-        'duration',
-        'ratingsQuantity',
-        'ratingsAverage',
-        'maxGroupSize',
-        'difficulty',
-        'price'
-    ]
-}));
+app.use(hpp());
+
+// API limiter
+app.use('/api', apiLimiter);
+
+// Routes
 app.use('/api', apiRouter);
-app.get('/', (req, res) => {
-    res.status(200).json({ 
-        status: 'success',
-        message: 'Happy Hacking! 🚀'
-    });
-});
 
-app.all('/*splat', (req, res, next) => {
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
+// Health check
+app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 
-app.use(errorController);
+// Error handler
+app.use(globalErrorHandler);
+
 
 const PORT = process.env.PORT || 8000;
 

@@ -1,107 +1,64 @@
 const Insight = require('../models/insightModel');
-const APIFeatures = require('../utils/apiFeatures');
-const AppError = require('../utils/appError');
-const blockchainService = require('../services/blockchainService');
+const { AppError } = require('./errorController');
 const {getInsightSummary, scoreInsight} = require('../services/nlpService');
+const {verifyHashOnChain} = require('../services/blockchainService');
 
 exports.getAllInsights = async (req, res, next) => {
-    try {
-        const features = new APIFeatures(
-            Insight.find({ user: req.user.id }),
-            req.query
-        )
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
-
-        const insights = await features.query;
-
-        res.status(200).json({
-            status: 'success',
-            results: insights.length,
-            data: {
-                insights,
-            },
-        });
-    } catch (err) {
-        next(err);
-    }
+  try {
+    const insights = await Insight.find({ user: req.user.id }).sort({ createdAt: -1 });
+    res.status(200).json({ status: 'success', results: insights.length, data: insights });
+  } catch (err) { next(err); }
 };
 
 exports.createInsight = async (req, res, next) => {
-    try {
-        const { content, originalityScore, sentimentScore, tags } = req.body;
-        
-        const contentHash = crypto.createHash('sha256').update(content).digest('hex');
-        
-        const newInsight = await Insight.create({
-            content,
-            tags,
-            user: req.user.id,
-            contentHash,
-        });
-
-        blockchainService.storeHashOnChain(contentHash, originalityScore, sentimentScore, newInsight._id)
-        .catch(err => console.error('Blockchain storage failed:', err));
-
-        res.status(201).json({
-            status: 'success',
-            data: {
-                insight: newInsight,
-            },
-        });
-    } catch (err) {
-        next(err);
-    }
+  try {
+    const { title, content, tags } = req.body;
+    if (!title || !content) return next(new AppError('Title and content are required', 400));
+    const insight = await Insight.create({ title, content, tags: tags || [], user: req.user.id });
+    res.status(201).json({ status: 'success', data: insight });
+  } catch (err) { next(err); }
 };
 
 exports.getInsight = async (req, res, next) => {
-    try {
-        const insight = await Insight.findOne({ _id: req.params.id, user: req.user.id });
-        
-        if (!insight) {
-            throw new AppError('No insight found with that ID', 404);
-        }
-        
-        if (insight.contentHash) {
-            const blockchainData = await blockchainService.verifyHashOnChain(insight.contentHash);
-            insight.blockchainVerification = blockchainData;
-        }
-
-        res.status(200).json({
-            status: 'success',
-            data: {
-                insight,
-            },
-        });
-    } catch (err) {
-        next(err);
-    }
+  try {
+    const insight = await Insight.findOne({ _id: req.params.id, user: req.user.id });
+    if (!insight) return next(new AppError('Insight not found', 404));
+    res.status(200).json({ status: 'success', data: insight });
+  } catch (err) { next(err); }
 };
 
+exports.verifyInsight = async(req, res, next) => {
+  try {
+    const hash = req.body;
+    const insight = verifyHashOnChain(hash);
+    res.status(200).json({status: 'success', data: insight})
+  } catch (error) {
+    next(err);
+  }
+}
+
 exports.getSummary = async (req, res, next) => {
-    const {title, content} = req.body;
-    try {
-        const summary = await getInsightSummary(title, content);
-        res.status(200).json({
-            status: 'success', 
-            data: summary
-        })
-    } catch (error) {
-        next(error);
-    }
+  const {title, content} = req.body;
+  try {
+      const summary = await getInsightSummary(title, content);
+      res.status(200).json({
+          status: 'success', 
+          data: summary
+      })
+  } catch (error) {
+      next(error);
+  }
 }
 
 exports.generateInsightScores = async (req, res, next) => {
-    const {title, content} = req.body;
-    try {
-        const scores = await scoreInsight(title, content);
-        res.status(200).json({
-            status: 'success', 
-            data: scores
-        })
-    } catch (error) {
-        next(error);
-    }
+  const {title, content} = req.body;
+  try {
+      const scores = await scoreInsight(title, content);
+      res.status(200).json({
+          status: 'success', 
+          data: scores
+      })
+  } catch (error) {
+      next(error);
+  }
 }

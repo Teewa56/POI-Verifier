@@ -28,7 +28,7 @@ export default function InsightDetailPage() {
                 <span>{new Date(insight.createdAt).toLocaleDateString()}</span>
             </div>
             <div className="content">{insight.content}</div>
-            {user?.id === insight.author.id && (
+            {user?._id === insight.author._id && (
                 <button className="edit-button">Edit Insight</button>
             )}
         </div>

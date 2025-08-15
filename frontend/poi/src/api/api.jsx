@@ -51,19 +51,16 @@ API.interceptors.response.use(
 
 // --- Auth APIs ---
 export const Login = (email, password) => API.post('/login', { email, password });
-export const LoginWithGoogle = (token) => API.post('/auth/google', {token})
-export const Register = (userData) => 
-    API.post('/register', userData);
-export const Logout = (refreshToken) => API.post('/logout', { refreshToken });
-export const ForgotPassword = (email) => API.post('/forgot-password', { email });
-export const ResetPassword = (token, password, passwordConfirm) =>
-    API.post(`/reset-password/${token}`, { password, passwordConfirm });
+export const LoginWithGoogle = (token) => API.post('/google-login', token)
+export const Register = (userData) => API.post('/register', userData);
+export const Logout = (refreshToken) => API.post('/logout', refreshToken);
 export const GetProfile = () => API.get('/user-profile');
 // --- Insight APIs ---
 export const GetAllInsights = () => API.get('/insights');
 export const CreateInsight = (data) => API.post('/insights/new', data);
 export const GetInsightById = (id) => API.get(`/insights/${id}`);
-export const GetSummary = (data) => API.post('/gemini/summary', data);
-export const GenerateInsightScores = (data) => API.post('/gemini/score-data', data);
+export const VerfiyInsight = (hash) => API.post('/verify-insight', hash)
+export const GetSummary = (data) => API.post('/get-summary', data);
+export const GenerateInsightScores = (data) => API.post('/get-score', data);
 
 export default API;

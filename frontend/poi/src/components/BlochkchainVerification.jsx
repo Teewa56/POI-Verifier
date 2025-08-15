@@ -1,8 +1,6 @@
 import { useState } from 'react';
-import { useWeb3 } from '../context/Web3Context';
 
 export default function BlockchainVerification({ insightId, contentHash }) {
-    const { contract } = useWeb3();
     const [verification, setVerification] = useState(null);
     const [loading, setLoading] = useState(false);
 

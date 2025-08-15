@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useWeb3 } from '../context/Web3Context';
 import { toast } from 'react-toastify';
 import { sha256 } from 'js-sha256';
 

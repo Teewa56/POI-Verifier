@@ -4,7 +4,7 @@ export default function Profile() {
     const { user, signOut } = useAuth();
 
     return (
-        <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <div className="mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <div className="text-center mb-6">
                 <div className="w-24 h-24 mx-auto rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center mb-4">
                 {user?.avatar ? (

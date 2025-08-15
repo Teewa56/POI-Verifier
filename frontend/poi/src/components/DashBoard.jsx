@@ -1,43 +1,44 @@
 import { useEffect, useState } from 'react';
 import { useWeb3 } from '../context/Web3Context';
-import { format } from 'date-fns';
+import { GetAllInsights } from '../api/api';
+import apiErrorHandler from '../utils/apiErrorHandler';
+import { User } from 'lucide-react';
 
 export default function DashboardPage() {
-    const { contract, account } = useWeb3();
+    const { connectWallet, account } = useWeb3();
     const [insights, setInsights] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!account) {
+            setLoading(false); 
+            return;
+        }
+
         const fetchInsights = async () => {
-            if (!contract || !account) return;
-
             try {
-                const hashes = await contract.getUserInsights(account);
+                setLoading(true);
+                const res = await GetAllInsights();
+                console.log('API Response:', res); // Debug log
                 
-                // Get each insight's details
-                const insightPromises = hashes.map(async (hash) => {
-                    const insight = await contract.getInsight(hash);
-                    return {
-                        contentHash: hash,
-                        author: insight.author,
-                        timestamp: Number(insight.timestamp),
-                        tags: insight.tags,
-                        originalityScore: Number(insight.originalityScore),
-                        sentimentScore: Number(insight.sentimentScore),
-                    };
-                });
-
-                const userInsights = await Promise.all(insightPromises);
-                setInsights(userInsights);
+                // Safely handle the response
+                if (res?.data?.insights) {
+                    // Filter out any null/undefined insights
+                    const validInsights = res.data.insights.filter(insight => insight?._id);
+                    setInsights(validInsights);
+                } else {
+                    setInsights([]);
+                }
             } catch (error) {
-                console.error('Failed to fetch insights:', error);
+                apiErrorHandler(error);
+                setInsights([]);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchInsights();
-    }, [contract, account]);
+    }, [account]);
 
     if (loading) {
         return <div className="text-center p-8">Loading...</div>;
@@ -45,68 +46,42 @@ export default function DashboardPage() {
 
     return (
         <div className="max-w-4xl mx-auto p-6">
-        <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Your Verified Insights</h1>
-            <a
-            href="/submit"
-            className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-            >
-            + New Insight
-            </a>
-        </div>
-        
-        {insights.length === 0 ? (
-            <div className="text-center p-8 border rounded-lg">
-            <p className="mb-4">You haven't submitted any insights yet.</p>
-            <a
-                href="/submit"
-                className="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700"
-            >
-                Submit Your First Insight
-            </a>
+            <div className="flex justify-between items-center mb-6">
+                <div 
+                    className='flex flex-row gap-2 cursor-pointer' 
+                    onClick={() => window.location.href = '/profile'}>
+                    <User size={40} />
+                    <p className='text-2xl font-bold'>Profile</p>
+                </div>
+                <button
+                    onClick={connectWallet}
+                    className="px-4 py-2 rounded-3xl bg-amber-300 font-bold"
+                >
+                    {account ? `Connected: ${account.slice(0, 6)}...` : 'Connect Wallet'}
+                </button>
             </div>
-        ) : (
-            <div className="space-y-4">
-            {insights.map((insight) => (
-                <div key={insight.contentHash} className="border p-4 rounded-lg hover:bg-gray-50">
-                <div className="flex justify-between items-start">
-                    <div>
-                    <h3 className="font-medium">
-                        Insight #{insight.contentHash.slice(0, 8)}...
-                    </h3>
-                    <p className="text-gray-600 text-sm mt-1">
-                        {format(new Date(insight.timestamp * 1000), 'MMM d, yyyy h:mm a')}
-                    </p>
-                    </div>
-                    <div className="flex space-x-2">
-                    {insight.tags.map((tag) => (
-                        <span key={tag} className="bg-gray-200 px-2 py-1 text-xs rounded">
-                        {tag}
-                        </span>
-                    ))}
-                    </div>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-4">
-                    <div>
-                    <p className="text-sm text-gray-500">Originality Score</p>
-                    <p className="font-medium">
-                        {insight.originalityScore || 'Not rated yet'}
-                    </p>
-                    </div>
-                    <div>
-                    <p className="text-sm text-gray-500">Sentiment Score</p>
-                    <p className="font-medium">
-                        {insight.sentimentScore || 'Not rated yet'}
-                    </p>
-                    </div>
-                </div>
-                <div className="mt-3 text-xs text-gray-500 break-all">
-                    Blockchain Hash: {insight.contentHash}
-                </div>
-                </div>
-            ))}
+            
+            <div className='flex flex-col gap-2'>
+                <h1 className="text-xl font-semibold">Your Verified Insights</h1>
+                <a href="/submit"
+                    className="bg-blue-600 w-fit text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                >
+                    + New Insight
+                </a>
             </div>
-        )}
+
+            <div className="space-y-4 mt-10">
+                {insights.length > 0 ? (
+                    insights.map((insight, idx) => (
+                        <div key={idx} className="p-4 border rounded-lg shadow-sm">
+                            <h2 className="font-semibold">{insight.title}</h2>
+                            <p>{insight.description}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>No insights found.</p>
+                )}
+            </div>
         </div>
     );
 }

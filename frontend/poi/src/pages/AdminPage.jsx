@@ -18,7 +18,7 @@ export default function AdminPage() {
     const handleVerify = async (insightId) => {
         await apiCall('patch', `/admin/insights/${insightId}/verify`);
         setInsights(insights.map(i => 
-        i.id === insightId ? {...i, verified: true} : i
+        i._id === insightId ? {...i, verified: true} : i
         ));
     };
 

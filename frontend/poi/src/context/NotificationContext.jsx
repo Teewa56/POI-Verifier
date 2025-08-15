@@ -26,7 +26,7 @@ export function NotificationProvider({ children }) {
 
     const markAsRead = (id) => {
         setNotifications(notifications.map(n => 
-        n.id === id ? { ...n, read: true } : n
+        n._id === id ? { ...n, read: true } : n
         ));
         setUnreadCount(prev => prev - 1);
     };

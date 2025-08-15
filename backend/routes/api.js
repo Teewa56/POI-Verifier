@@ -1,23 +1,23 @@
 const express = require('express');
 const router = express.Router();
-const insightController = require('../controllers/insightController');
 const authController = require('../controllers/authController');
-const authMiddleware = require('../middleware/authMiddleware');
+const insightController = require('../controllers/insightController');
+const { protect } = require('../middleware/authMiddleware');
 
-// Authentication routes
+// Auth
 router.post('/register', authController.signup);
 router.post('/login', authController.login);
-router.post('/auth/google', authController.loginWithGooogle);
+router.post('/google-login', authController.googleLogin);
 router.post('/refresh-token', authController.refreshToken);
 router.post('/logout', authController.logout);
-router.post('/forgot-password', authController.forgotPassword);
-router.post('/reset-password', authController.resetPassword);
-router.get('/user-profile', authMiddleware.protect, authController.getProfile);
-// Insight routes
-router.get('/insights', authMiddleware.protect, insightController.getAllInsights);
-router.post('/insights/new', authMiddleware.protect, insightController.createInsight);
-router.get('/insights/:id', authMiddleware.protect, insightController.getInsight);
-router.post('/gemini/summary', authMiddleware.protect, insightController.getSummary);
-router.post('/gemini/score-data', authMiddleware.protect, insightController.generateInsightScores);
+router.get('/user-profile', protect, authController.getProfile);
+
+// Insights
+router.get('/insights', protect, insightController.getAllInsights);
+router.post('/insights/new', protect, insightController.createInsight);
+router.get('/insights/:id', protect, insightController.getInsight);
+router.post('/verify-insight', protect, insightController.verifyInsight);
+router.post('/get-summary',protect, insightController.getSummary);
+router.post('/get-score',protect, insightController.generateInsightScores);
 
 module.exports = router;

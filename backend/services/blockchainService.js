@@ -1,7 +1,5 @@
 const { ethers } = require('ethers');
 const Insight = require('../models/insightModel');
-const AppError = require('../utils/appError');
-const logger = require('../utils/logger');
 const contractABI = require('../abi/insightContractABI.json'); 
 
 let provider;
@@ -19,9 +17,9 @@ const initialize = () => {
             wallet
         );
         
-        logger.info('Blockchain service initialized');
+        console.log('Blockchain service initialized');
     } catch (err) {
-        logger.error('Failed to initialize blockchain service:', err);
+        console.log('Failed to initialize blockchain service:', err);
         throw err;
     }
 };
@@ -44,8 +42,8 @@ const storeHashOnChain = async (contentHash, originalityScore, sentimentScore, i
             blockNumber: receipt.blockNumber,
         };
     } catch (err) {
-        logger.error('Failed to store hash on blockchain:', err);
-        throw new AppError('Failed to store on blockchain', 500);
+        console.log('Failed to store hash on blockchain:', err);
+        throw new ('Failed to store on blockchain');
     }
 };
 
@@ -59,8 +57,8 @@ const verifyHashOnChain = async (contentHash) => {
             author,
         };
     } catch (err) {
-        logger.error('Failed to verify hash on blockchain:', err);
-        throw new AppError('Failed to verify on blockchain', 500);
+        console.log('Failed to verify hash on blockchain:', err);
+        throw new ('Failed to verify on blockchain');
     }
 };
 

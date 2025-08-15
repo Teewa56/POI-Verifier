@@ -1,13 +1,14 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import { ethers } from 'ethers';
 import PoIVerifier from '../contracts/PoIVerifier.json';
 
 const Web3Context = createContext();
 
 export function Web3Provider({ children }) {
-    const [state, setState] = useState({
-        connectWallet: async () => {},
-    });
+    const [provider, setProvider] = useState(null);
+    const [signer, setSigner] = useState(null);
+    const [contract, setContract] = useState(null);
+    const [account, setAccount] = useState(null);
 
     const connectWallet = async () => {
         if (!window.ethereum) {
@@ -16,37 +17,28 @@ export function Web3Provider({ children }) {
         }
 
         try {
-            const provider = new ethers.BrowserProvider(window.ethereum);
-            const accounts = await provider.send('eth_requestAccounts', []);
-            const signer = await provider.getSigner();
-            const contract = new ethers.Contract(
+            const prov = new ethers.BrowserProvider(window.ethereum);
+            const accounts = await prov.send('eth_requestAccounts', []);
+            const sign = await prov.getSigner();
+            const cont = new ethers.Contract(
                 import.meta.env.VITE_CONTRACT_ADDRESS,
                 PoIVerifier.abi,
-                signer
+                sign
             );
 
-            setState({
-                provider,
-                signer,
-                contract,
-                account: accounts[0],
-                connectWallet,
-            });
+            setProvider(prov);
+            setSigner(sign);
+            setContract(cont);
+            setAccount(accounts[0]);
         } catch (error) {
             console.error('Error connecting wallet:', error);
         }
     };
 
-    useEffect(() => {
-        if (window.ethereum) {
-            window.ethereum.on('accountsChanged', (accounts) => {
-                setState(prev => ({ ...prev, account: accounts[0] }));
-            });
-        }
-    }, [setState]);
-
     return (
-        <Web3Context.Provider value={{ ...state, connectWallet }}>
+        <Web3Context.Provider
+            value={{ provider, signer, contract, account, connectWallet }}
+        >
             {children}
         </Web3Context.Provider>
     );
