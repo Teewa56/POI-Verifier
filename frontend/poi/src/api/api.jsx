@@ -38,7 +38,7 @@ API.interceptors.response.use(
                 return API(originalRequest);
             } catch (err) {
                 sessionStorage.clear();
-                window.location.href = '/login';
+                window.location.href = '/';
                 return Promise.reject(err);
             }
         }
@@ -59,7 +59,7 @@ export const GetProfile = () => API.get('/user-profile');
 export const GetAllInsights = () => API.get('/insights');
 export const CreateInsight = (data) => API.post('/insights/new', data);
 export const GetInsightById = (id) => API.get(`/insights/${id}`);
-export const VerfiyInsight = (hash) => API.post('/verify-insight', hash)
+export const VerifyInsight = (hash) => API.post('/verify-insight', { hash });
 export const GetSummary = (data) => API.post('/get-summary', data);
 export const GenerateInsightScores = (data) => API.post('/get-score', data);
 

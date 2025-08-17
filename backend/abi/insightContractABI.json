@@ -1,5 +1,5 @@
 {
-    "abi": [
+  "abi": [
     {
       "inputs": [],
       "stateMutability": "nonpayable",
@@ -348,6 +348,57 @@
           "internalType": "bytes32",
           "name": "",
           "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_contentHash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "verifyInsight",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "bytes32",
+              "name": "contentHash",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "address",
+              "name": "author",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "timestamp",
+              "type": "uint256"
+            },
+            {
+              "internalType": "string[]",
+              "name": "tags",
+              "type": "string[]"
+            },
+            {
+              "internalType": "uint256",
+              "name": "originalityScore",
+              "type": "uint256"
+            },
+            {
+              "internalType": "int256",
+              "name": "sentimentScore",
+              "type": "int256"
+            }
+          ],
+          "internalType": "struct PoIVerifier.Insight",
+          "name": "",
+          "type": "tuple"
         }
       ],
       "stateMutability": "view",

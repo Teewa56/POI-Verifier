@@ -2,7 +2,8 @@ import { format } from 'date-fns';
 
 export default function InsightCard({ insight }) {
     return (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-4">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 mb-4 cursor-pointer"
+            onClick={() => window.location.href = `/insight/${insight._id}`}>
             <div className="flex justify-between items-start mb-2">
                 <h3 className="font-semibold text-lg dark:text-white">
                 {insight.title || 'Untitled Insight'}
@@ -14,7 +15,7 @@ export default function InsightCard({ insight }) {
             
             <p className="text-gray-600 dark:text-gray-300 mb-4">
                 {insight.content.length > 150 
-                ? `${insight.content.substring(0, 150)}...` 
+                ? `${insight.content.substring(0, 50)}...` 
                 : insight.content}
             </p>
             
@@ -29,23 +30,23 @@ export default function InsightCard({ insight }) {
                 ))}
             </div>
             
-            <div className="flex justify-between items-center">
+            <div className="grid grid-cols-2 gap-2">
                 <div className="flex items-center">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
-                    Originality:
-                </span>
-                <span className="font-bold dark:text-white">
-                    {insight.originalityScore || 'N/A'}
-                </span>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
+                        Originality:
+                    </span>
+                    <span className="font-bold dark:text-white">
+                        {insight.originalityScore || 'N/A'}
+                    </span>
                 </div>
                 
                 <div className="flex items-center">
-                <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
-                    Sentiment:
-                </span>
-                <span className="font-bold dark:text-white">
-                    {insight.sentimentScore || 'N/A'}
-                </span>
+                    <span className="text-sm font-medium text-gray-500 dark:text-gray-400 mr-2">
+                        Sentiment:
+                    </span>
+                    <span className="font-bold dark:text-white">
+                        {insight.sentimentScore || 'N/A'}
+                    </span>
                 </div>
             </div>
         </div>

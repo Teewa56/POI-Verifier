@@ -46,9 +46,9 @@ export default function SignUpPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="min-h-screen flex items-center justify-center">
         {loading && <Loading />}
-        <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <div className="w-full max-w-md p-8 space-y-8 bg-gray-400 rounded-lg shadow-md">
             <h2 className="text-2xl font-bold text-center dark:text-white">
             Create a new account
             </h2>
@@ -56,7 +56,7 @@ export default function SignUpPage() {
             <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
                 <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                     Full Name
                 </label>
                 <input
@@ -67,12 +67,12 @@ export default function SignUpPage() {
                     placeholder='Enter Your full name'
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 "
                 />
                 </div>
                 
                 <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email address
                 </label>
                 <input
@@ -83,12 +83,12 @@ export default function SignUpPage() {
                     placeholder='Enter your email address'
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 "
                 />
                 </div>
                 
                 <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                     Password
                 </label>
                 <input
@@ -100,12 +100,12 @@ export default function SignUpPage() {
                     minLength="8"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 "
                 />
                 </div>
                 
                 <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                     Confirm Password
                 </label>
                 <input
@@ -116,7 +116,7 @@ export default function SignUpPage() {
                     required
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 "
                 />
                 </div>
             </div>
@@ -133,12 +133,12 @@ export default function SignUpPage() {
             </form>
             
             <div className="text-center text-sm">
-            <span className="text-gray-500 dark:text-gray-400">
+            <span className="text-black">
                 Already have an account?{' '}
             </span>
             <Link
                 to="/signin"
-                className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+                className="font-medium text-black"
             >
                 Sign in
             </Link>

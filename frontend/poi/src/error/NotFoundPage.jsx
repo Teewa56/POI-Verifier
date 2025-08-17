@@ -3,8 +3,8 @@ import { SearchX, Home } from 'lucide-react';
 
 export default function NotFoundPage() {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 p-6">
-            <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-10 text-center max-w-md w-full transform transition-all duration-300 hover:scale-[1.02]">
+        <div className="min-h-screen flex items-center justify-center p-6">
+            <div className="bg-gray-800 rounded-2xl shadow-lg p-10 text-center max-w-md w-full transform transition-all duration-300 hover:scale-[1.02]">
                 <SearchX className="mx-auto text-blue-500 dark:text-blue-400 mb-4" size={64} />
                 <h1 className="text-6xl font-bold text-blue-600 dark:text-blue-400 mb-2">404</h1>
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">

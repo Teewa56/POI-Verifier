@@ -47,7 +47,7 @@ describe('API Service', () => {
         return API.interceptors.response.handlers[0].rejected(mockError)
         .catch(() => {
             expect(sessionStorage.getItem('token')).toBeNull();
-            expect(window.location.href).toBe('/login');
+            expect(window.location.href).toBe('/');
             expect(toast.error).toHaveBeenCalledWith('An error occurred');
             
             window.location = originalWindowLocation;

@@ -51,7 +51,6 @@ contract PoIVerifier is Ownable {
         string[] memory tags
     ) external {
         require(insights[contentHash].author == address(0), "Insight already exists");
-        
         insights[contentHash] = Insight({
             contentHash: contentHash,
             author: msg.sender,
@@ -80,7 +79,7 @@ contract PoIVerifier is Ownable {
         bytes32 contentHash,
         uint256 originalityScore,
         int256 sentimentScore
-    ) external onlyOwner {
+    ) external {
         require(insights[contentHash].author != address(0), "Insight does not exist");
         require(originalityScore <= 100, "Invalid originality score");
         require(sentimentScore >= -100 && sentimentScore <= 100, "Invalid sentiment score");

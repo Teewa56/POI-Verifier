@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import { useWeb3 } from '../context/Web3Context';
 import { GetAllInsights } from '../api/api';
 import apiErrorHandler from '../utils/apiErrorHandler';
-import { User } from 'lucide-react';
+import { User, LogOut } from 'lucide-react';
+import InsightCard from '../components/InsightCard'
 
 export default function DashboardPage() {
-    const { connectWallet, account } = useWeb3();
+    const { connectWallet, account, disconnectWallet } = useWeb3();
     const [insights, setInsights] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -19,16 +20,7 @@ export default function DashboardPage() {
             try {
                 setLoading(true);
                 const res = await GetAllInsights();
-                console.log('API Response:', res); // Debug log
-                
-                // Safely handle the response
-                if (res?.data?.insights) {
-                    // Filter out any null/undefined insights
-                    const validInsights = res.data.insights.filter(insight => insight?._id);
-                    setInsights(validInsights);
-                } else {
-                    setInsights([]);
-                }
+                setInsights(res?.data?.data)
             } catch (error) {
                 apiErrorHandler(error);
                 setInsights([]);
@@ -53,30 +45,40 @@ export default function DashboardPage() {
                     <User size={40} />
                     <p className='text-2xl font-bold'>Profile</p>
                 </div>
-                <button
-                    onClick={connectWallet}
-                    className="px-4 py-2 rounded-3xl bg-amber-300 font-bold"
-                >
-                    {account ? `Connected: ${account.slice(0, 6)}...` : 'Connect Wallet'}
-                </button>
+                <div className='flex flex-col gap-1'>
+                    <button
+                        onClick={connectWallet}
+                        className="px-4 py-2 rounded-3xl bg-amber-300 font-bold cursor-pointer"
+                    >
+                        {account ? `Connected` : 'Connect Wallet'}
+                    </button>
+                    {account && 
+                    <button 
+                        onClick={disconnectWallet}
+                        className='flex items-center px-4 py-2 rounded-3xl bg-amber-300 justify-start gap-2 cursor-pointer'>
+                        <LogOut size={20} /> <p>Disconnect</p>
+                    </button>}
+                </div>
             </div>
             
-            <div className='flex flex-col gap-2'>
-                <h1 className="text-xl font-semibold">Your Verified Insights</h1>
+            <div className='grid grid-cols-2 gap-3'>
                 <a href="/submit"
                     className="bg-blue-600 w-fit text-white py-2 px-4 rounded-lg hover:bg-blue-700"
                 >
                     + New Insight
                 </a>
+                <a href="/verify"
+                    className="bg-blue-600 w-fit text-white py-2 px-4 rounded-lg hover:bg-blue-700"
+                >
+                    Verify Insight
+                </a>
             </div>
 
-            <div className="space-y-4 mt-10">
+            <h1 className="text-xl font-semibold">Your Verified Insights</h1>
+            <div className="grid grid-cols-2 mt-5 gap-2">
                 {insights.length > 0 ? (
                     insights.map((insight, idx) => (
-                        <div key={idx} className="p-4 border rounded-lg shadow-sm">
-                            <h2 className="font-semibold">{insight.title}</h2>
-                            <p>{insight.description}</p>
-                        </div>
+                        <InsightCard insight={insight} key={idx} />
                     ))
                 ) : (
                     <p>No insights found.</p>
